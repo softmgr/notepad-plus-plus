@@ -65,6 +65,8 @@
 
 #endif
 
+#define DEFAULT_DLG_FONT L"MS Shell Dlg"
+
 class NativeLangSpeaker;
 
 /*!
@@ -497,6 +499,7 @@ struct NewDocDefaultSettings final
 	UniMode _unicodeMode = uniUTF8_NoBOM;
 	bool _openAnsiAsUtf8 = true;
 	LangType _lang = L_TEXT;
+	std::wstring _udl;
 	int _codepage = -1; // -1 when not using
 	bool _addNewDocumentOnStartup = false;
 	bool _useContentAsTabName = false;
@@ -741,7 +744,7 @@ struct NppGUI final
 	bool _finderShowOnlyOneEntryPerFoundLine = true;
 	bool _fif_ignoreunsavedChangesInOpenedFiles = false;
 
-	int _fileAutoDetection = cdEnabledNew;
+	int _fileAutoDetection = cdEnabled4CurrentFile;
 
 	bool _checkHistoryFiles = false;
 
@@ -892,6 +895,7 @@ struct NppGUI final
 	bool _isFawSymlinkAllowed = false; // allow to open symlink files in FaW (Folder as Workspace) panel.
 
 	WORD _fontDlgSize = 8;
+	std::wstring _fontDlgName = DEFAULT_DLG_FONT;
 };
 
 
@@ -1425,8 +1429,12 @@ public:
 		return _nppGUI;
 	}
 
-	WORD getDlgFontSize() const noexcept {
+	[[nodiscard]] WORD getDlgFontSize() const noexcept {
 		return std::clamp<WORD>(_nppGUI._fontDlgSize, 8U, 24U);
+	}
+
+	[[nodiscard]] const std::wstring& getDlgFontName() const noexcept {
+		return _nppGUI._fontDlgName;
 	}
 
 	const char* getWordList(LangType langID, int typeIndex) const {
@@ -1986,7 +1994,7 @@ public:
 	COLORREF getFindDlgStatusMsgColor(int colourIndex);
 
 	bool isServerAllowed(const char* path2check, bool bCaseSensitive = false);
-	bool getServerName(const std::string& path2check, std::string& serverNameOutput);
+	static bool getServerName(const std::string& path2check, std::string& serverNameOutput);
 
 private:
 	unsigned long _sintillaModEventMask = SC_MOD_DELETETEXT | SC_MOD_INSERTTEXT | SC_PERFORMED_UNDO | SC_PERFORMED_REDO | SC_MOD_CHANGEINDICATOR;
