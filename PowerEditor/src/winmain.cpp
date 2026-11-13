@@ -226,10 +226,9 @@ bool isInList(const wchar_t *token2Find, ParamVector& params, bool eraseArg = tr
 	return false;
 }
 
-bool getParamVal(wchar_t c, ParamVector& params, std::wstring& value, bool allowEmpty = false)
+bool getParamVal(wchar_t c, ParamVector& params, std::wstring& value)
 {
 	value.clear();
-	const size_t minLen = allowEmpty ? 2 : 3;
 	for (auto it = params.begin(); it != params.end(); ++it)
 	{
 		const std::wstring& token = *it;
@@ -237,7 +236,7 @@ bool getParamVal(wchar_t c, ParamVector& params, std::wstring& value, bool allow
 		{
 			value.assign(token, 2, std::wstring::npos);
 			params.erase(it);
-			return token.size() >= minLen;
+			return !value.empty();
 		}
 	}
 	return false;
